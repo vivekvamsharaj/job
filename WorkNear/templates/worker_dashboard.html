@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Worker Dashboard{% endblock %}
+{% block content %}
+<div class="section-heading"><div><span class="eyebrow">WORKER SPACE</span><h1 class="h2 fw-bold mt-2">{{ t.welcome }}, {{ user.name }}</h1><p class="text-secondary mb-0">Track your applications and find new opportunities.</p></div><a href="{{ url_for('jobs') }}" class="btn btn-primary">{{ t.find }}</a></div>
+<h2 class="h5 fw-bold mb-3">Your applications</h2>
+{% if applications %}
+<div class="row g-3">{% for application in applications %}
+<div class="col-md-6"><div class="job-card">{% if application.job %}<h3 class="h5 fw-bold">{{ application.job.title }}</h3><div class="wage">₹{{ "%.0f"|format(application.job.wage) }} <small>/ day</small></div><p class="text-secondary mt-2">📍 {{ application.job.address }}</p>{% if application.status == 'accepted' %}<a class="btn btn-outline-primary btn-sm mb-2" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination={{ application.job.lat }},{{ application.job.lon }}">Directions to worksite</a>{% endif %}{% else %}<p>Job listing is no longer available.</p>{% endif %}
+<div><span class="status-pill status-{{ application.status }}">{{ application.status|title }}</span></div></div></div>
+{% endfor %}</div>
+{% else %}<div class="empty-state"><div class="feature-icon">📋</div><h3>No applications yet</h3><p>Find work nearby and apply. Your application status will appear here.</p><a href="{{ url_for('jobs') }}" class="btn btn-primary">{{ t.find }}</a></div>{% endif %}
+{% endblock %}

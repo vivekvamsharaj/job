@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="form-shell"><div class="form-card"><span class="eyebrow">WELCOME BACK</span><h1 class="h2 fw-bold mt-2">{{ t.login }}</h1><p class="text-secondary">Sign in to manage your jobs and applications.</p>
+<form method="post" class="vstack gap-3"><div><label class="form-label">{{ t.phone }}</label><input name="phone" class="form-control" required inputmode="tel"></div><div><label class="form-label">{{ t.password }}</label><input name="password" type="password" class="form-control" required></div><button class="btn btn-primary btn-lg">{{ t.login }}</button></form>
+<p class="mt-3 mb-0 text-secondary">New to WorkNear? <a href="{{ url_for('register') }}">{{ t.register }}</a></p></div></div>
+{% endblock %}

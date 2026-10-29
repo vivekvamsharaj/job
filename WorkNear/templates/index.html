@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Find local daily jobs{% endblock %}
+{% block content %}
+<section class="hero rounded-4 p-4 p-md-5 mb-4">
+  <div class="row align-items-center g-4">
+    <div class="col-lg-7">
+      <span class="eyebrow">LOCAL WORK. REAL OPPORTUNITIES.</span>
+      <h1 class="display-5 fw-bold mt-3">{{ t.tagline }}</h1>
+      <p class="lead text-secondary">Connect with nearby employers, see daily wages, and get directions to the worksite. Available in English, తెలుగు and हिन्दी.</p>
+      <div class="d-flex flex-wrap gap-2 mt-4">
+        <a class="btn btn-primary btn-lg" href="{{ url_for('jobs') }}">{{ t.find }} →</a>
+        {% if not user %}<a class="btn btn-outline-dark btn-lg" href="{{ url_for('register') }}">{{ t.register }}</a>{% endif %}
+      </div>
+    </div>
+    <div class="col-lg-5"><div class="hero-card">
+      <div class="hero-pin">📍</div><h3 class="fw-bold">Work close to home</h3>
+      <p class="text-secondary mb-3">Find construction, cleaning, painting, farm work, driving, plumbing and more.</p>
+      <div class="stat-row"><span>📏 Radius</span><strong>10 km</strong></div>
+      <div class="stat-row"><span>🗣 Languages</span><strong>3 supported</strong></div>
+      <div class="stat-row"><span>🧰 Worker-friendly</span><strong>Simple to use</strong></div>
+    </div></div>
+  </div>
+</section>
+<div class="row g-3 mb-4">
+  <div class="col-md-4"><div class="feature-card"><div class="feature-icon">🧑‍🔧</div><h5>For workers</h5><p>Search local work, compare daily wages and apply to jobs.</p></div></div>
+  <div class="col-md-4"><div class="feature-card"><div class="feature-icon">🏗️</div><h5>For owners</h5><p>Post vacancies, set wages and manage applications.</p></div></div>
+  <div class="col-md-4"><div class="feature-card"><div class="feature-icon">🗺️</div><h5>Map directions</h5><p>Use a map to locate worksites and open directions.</p></div></div>
+</div>
+<div class="section-heading"><div><span class="eyebrow">GET STARTED</span><h2>One portal, two roles</h2></div></div>
+<div class="row g-3">
+  <div class="col-md-6"><div class="role-card"><h4>Looking for work?</h4><p>Create a worker account and search jobs near your location.</p><a href="{{ url_for('register') }}" class="btn btn-dark">Join as a worker</a></div></div>
+  <div class="col-md-6"><div class="role-card"><h4>Need workers?</h4><p>Register as an owner and post a daily wage job.</p><a href="{{ url_for('register') }}" class="btn btn-outline-dark">Hire workers</a></div></div>
+</div>
+{% endblock %}

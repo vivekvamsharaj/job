@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Applications{% endblock %}
+{% block content %}
+<a href="{{ url_for('dashboard') }}" class="back-link">← {{ t.dashboard }}</a>
+<div class="section-heading mt-3"><div><span class="eyebrow">CANDIDATES</span><h1 class="h2 fw-bold mt-2">{{ job.title }}</h1><p class="text-secondary">₹{{ "%.0f"|format(job.wage) }} per day · {{ job.address }}</p></div></div>
+{% if applicants %}
+<div class="row g-3">{% for applicant in applicants %}
+<div class="col-md-6"><div class="job-card"><h3 class="h5 fw-bold">{{ applicant.worker_name }}</h3><p class="mb-1">📞 {{ applicant.worker_phone }}</p><p class="text-secondary">Skills: {{ applicant.skills or "Not specified" }}</p><span class="status-pill status-{{ applicant.status }}">{{ applicant.status|title }}</span>
+{% if applicant.status == 'pending' %}<div class="d-flex gap-2 mt-3"><form method="post" action="{{ url_for('update_application', application_id=applicant._id|string, decision='accepted') }}"><button class="btn btn-success btn-sm">{{ t.accept }}</button></form><form method="post" action="{{ url_for('update_application', application_id=applicant._id|string, decision='rejected') }}"><button class="btn btn-outline-danger btn-sm">{{ t.reject }}</button></form></div>{% endif %}
+</div></div>{% endfor %}</div>
+{% else %}<div class="empty-state"><h3>{{ t.noapps }}</h3></div>{% endif %}
+{% endblock %}

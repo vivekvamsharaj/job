@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Post a job{% endblock %}
+{% block content %}
+<div class="form-shell wide"><div class="form-card"><span class="eyebrow">HIRE LOCALLY</span><h1 class="h2 fw-bold mt-2">{{ t.post }}</h1><p class="text-secondary">Add the job details and exact worksite coordinates so workers can find it within their radius.</p>
+<form method="post" class="row g-3">
+  <div class="col-md-6"><label class="form-label">{{ t.title }}</label><input name="title" class="form-control" required placeholder="Construction helper"></div>
+  <div class="col-md-6"><label class="form-label">{{ t.skills }}</label><input name="skills" class="form-control" placeholder="Construction, cleaning, painting"></div>
+  <div class="col-12"><label class="form-label">{{ t.description }}</label><textarea name="description" class="form-control" rows="3" placeholder="Describe the work, hours, tools and safety requirements"></textarea></div>
+  <div class="col-md-6"><label class="form-label">{{ t.wage }}</label><input name="wage" type="number" min="1" step="1" class="form-control" required></div>
+  <div class="col-md-6"><label class="form-label">{{ t.date }}</label><input name="date" type="date" class="form-control"></div>
+  <div class="col-md-6"><label class="form-label">{{ t.workers }}</label><input name="workers_needed" type="number" min="1" value="1" class="form-control" required></div>
+  <div class="col-md-6"><label class="form-label">{{ t.address }}</label><input name="address" class="form-control" required placeholder="Area, street, landmark"></div>
+  <div class="col-md-6"><label class="form-label">{{ t.latitude }}</label><input id="ownerLat" name="lat" class="form-control" required placeholder="e.g. 17.3850"></div>
+  <div class="col-md-6"><label class="form-label">{{ t.longitude }}</label><input id="ownerLon" name="lon" class="form-control" required placeholder="e.g. 78.4867"></div>
+  <div class="col-12"><button type="button" class="btn btn-outline-primary" onclick="useMyLocation('ownerLat','ownerLon')">📍 Use current worksite location</button><p class="form-text">Allow location permission at the worksite, or enter the worksite coordinates manually. Verify the pin before posting.</p></div>
+  <div class="col-12"><div id="ownerMap" class="map-box"></div></div>
+  <div class="col-12"><button class="btn btn-primary btn-lg w-100">{{ t.post }}</button></div>
+</form></div></div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+ const map = L.map('ownerMap').setView([17.385,78.4867], 11);
+ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+ let marker;
+ map.on('click', function(e) {
+   document.getElementById('ownerLat').value=e.latlng.lat.toFixed(6);
+   document.getElementById('ownerLon').value=e.latlng.lng.toFixed(6);
+   if(marker) map.removeLayer(marker);
+   marker=L.marker(e.latlng).addTo(map).bindPopup('Worksite location').openPopup();
+ });
+});
+</script>
+{% endblock %}

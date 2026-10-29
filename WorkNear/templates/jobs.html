@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Nearby Jobs{% endblock %}
+{% block content %}
+<div class="section-heading"><div><span class="eyebrow">LOCAL OPPORTUNITIES</span><h1 class="h2 fw-bold mt-2">{{ t.nearby }}</h1><p class="text-secondary mb-0">Search up to 10 km away. Default location is Hyderabad if you do not share GPS.</p></div></div>
+<div class="filter-card mb-4">
+<form method="get" id="jobSearch" class="row g-3 align-items-end">
+  <div class="col-md-4"><label class="form-label">Skill or job title</label><input name="skill" class="form-control" value="{{ skill }}" placeholder="e.g. painter, helper"></div>
+  <div class="col-md-2"><label class="form-label">Radius (km)</label><select name="radius" class="form-select"><option value="5" {% if radius == 5 %}selected{% endif %}>5 km</option><option value="10" {% if radius == 10 %}selected{% endif %}>10 km</option><option value="20" {% if radius == 20 %}selected{% endif %}>20 km</option></select></div>
+  <input type="hidden" name="lat" id="lat" value="{{ lat }}"><input type="hidden" name="lon" id="lon" value="{{ lon }}">
+  <div class="col-md-3"><button type="button" class="btn btn-outline-primary w-100" onclick="useMyLocation('lat','lon','jobSearch')">📍 {{ t.selectloc }}</button></div>
+  <div class="col-md-3"><button class="btn btn-primary w-100">{{ t.find }}</button></div>
+</form><small class="text-secondary d-block mt-2">{{ t.manual }}: latitude and longitude are used by the search.</small>
+</div>
+{% if jobs %}
+<div class="row g-3">
+{% for job in jobs %}
+  <div class="col-md-6 col-xl-4"><article class="job-card h-100">
+    <div class="d-flex justify-content-between align-items-start gap-2"><span class="job-chip">{{ job.skills or "Daily wage work" }}</span><span class="distance-chip">{{ job.distance }} km</span></div>
+    <h3 class="h5 fw-bold mt-3">{{ job.title }}</h3><p class="text-secondary">{{ job.description or "Daily wage job opportunity." }}</p>
+    <div class="wage">₹{{ "%.0f"|format(job.wage) }} <small>/ day</small></div>
+    <div class="job-meta mt-3"><div>📅 {{ job.date or "Date to be agreed" }}</div><div>👥 {{ job.workers_needed }} worker(s) needed</div><div>📍 {{ job.address }}</div><div>🏗️ {{ job.owner_name }}</div></div>
+    <div class="d-flex gap-2 mt-4"><a class="btn btn-outline-primary flex-fill" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination={{ job.lat }},{{ job.lon }}">Directions</a>
+    {% if user and user.role == 'worker' %}<form method="post" action="{{ url_for('apply_job', job_id=job.id) }}" class="flex-fill"><button class="btn btn-primary w-100">{{ t.apply }}</button></form>{% elif not user %}<a class="btn btn-primary flex-fill" href="{{ url_for('login') }}">{{ t.apply }}</a>{% endif %}</div>
+  </article></div>
+{% endfor %}
+</div>
+{% else %}<div class="empty-state"><div class="feature-icon">🔎</div><h3>No nearby jobs found</h3><p>{{ t.nojobs }} Try a different skill or location, or increase the radius.</p></div>{% endif %}
+<div class="mt-4"><h2 class="h5 fw-bold">Map preview</h2><div id="jobsMap" class="map-box"></div></div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const map = L.map('jobsMap').setView([{{ lat }}, {{ lon }}], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+  L.marker([{{ lat }}, {{ lon }}]).addTo(map).bindPopup('Search location');
+  {% for job in jobs %}
+  L.marker([{{ job.lat }}, {{ job.lon }}]).addTo(map).bindPopup({{ (job.title ~ " · ₹" ~ ("%.0f"|format(job.wage)) ~ "/day · " ~ job.distance ~ " km")|tojson }});
+  {% endfor %}
+});
+</script>
+{% endblock %}
